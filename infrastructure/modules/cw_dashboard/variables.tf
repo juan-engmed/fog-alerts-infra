@@ -1,25 +1,24 @@
 variable "dashboard_name" {
-  type        = string
   description = "Nome do dashboard CloudWatch"
-  default     = "FogAlertsDashboard"
-}
-
-variable "sns_topic_name" {
   type        = string
-  description = "Nome do tópico SNS"
-}
-
-variable "sqs_queue_name" {
-  type        = string
-  description = "Nome da fila SQS"
-}
-
-variable "lambda_logger_name" {
-  type        = string
-  description = "Nome da função Lambda que salva no S3"
 }
 
 variable "aws_region" {
+  description = "Região AWS"
   type        = string
-  default     = "us-east-1"
+}
+
+variable "sns_topic_name" {
+  description = "Nome do tópico SNS"
+  type        = string
+}
+
+variable "sqs_queue_name" {
+  description = "Nome da fila SQS"
+  type        = string
+}
+
+variable "lambda_logger_name" {
+  description = "Nome da função Lambda de logs"
+  type        = string
 }
