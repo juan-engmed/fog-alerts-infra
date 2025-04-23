@@ -12,7 +12,7 @@ terraform {
 
   # BACKEND REMOTO (opcional no início, mas vamos preparar)
   # O backend guarda o estado da infraestrutura
-  # Usamos S3 como armazenamento remoto
+  # Usamos S3 como armazenamento remoto 
   backend "s3" {
     bucket  = "fog-alerts-terraform-states" # Nome do bucket S3 onde o estado será salvo
     key     = "dev/infra.tfstate"           # Caminho dentro do bucket para o arquivo
