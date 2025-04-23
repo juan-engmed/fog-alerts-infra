@@ -1,70 +1,57 @@
-name: 🚀 Deploy Terraform Infra
+name: ⚙️ Terraform Deploy
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'environments/dev/**'
-      - 'infrastructure/modules/**'
-  workflow_dispatch:
-
-env:
-  AWS_REGION: us-east-1
+  workflow_dispatch: # Execução manual
 
 jobs:
   terraform:
-    name: 🌎 Deploy Infraestrutura Terraform
+    name: 🚀 Deploy Terraform na AWS
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout do Código
+      - name: 📦 Checkout do repositório
         uses: actions/checkout@v3
 
-      - name: 🔐 Configurar Credenciais AWS
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: ⬇️ Instalar Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          terraform_version: 1.5.7
 
-      - name: ⛏️ Terraform Init
-        working-directory: environments/dev
+      - name: 🔁 Terraform Init
         run: |
-          echo "===================="
-          echo "🚀 Iniciando Terraform"
-          echo "===================="
+          echo "========================="
+          echo "🚀 Iniciando Terraform Init"
+          echo "========================="
           terraform init
+        working-directory: environments/dev
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: 🔍 Terraform Validate
+        run: terraform validate
         working-directory: environments/dev
-        run: |
-          echo "===================="
-          echo "✅ Validando configuração"
-          echo "===================="
-          terraform validate
+        env:
+          AWS_REGION: us-east-1
 
       - name: 🧹 Terraform Format Check
+        run: terraform fmt -check
         working-directory: environments/dev
-        run: |
-          echo "===================="
-          echo "🔍 Verificando formatação"
-          echo "===================="
-          terraform fmt -check
 
       - name: 📋 Terraform Plan
+        run: terraform plan
         working-directory: environments/dev
-        run: |
-          echo "===================="
-          echo "🧠 Gerando plano de execução"
-          echo "===================="
-          terraform plan
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: ✅ Terraform Apply (Manual)
+      - name: ⚠️ Terraform Apply (Manual)
         if: github.event_name == 'workflow_dispatch'
+        run: terraform apply -auto-approve
         working-directory: environments/dev
-        run: |
-          echo "===================="
-          echo "⚙️ Aplicando mudanças com Terraform"
-          echo "===================="
-          terraform apply -auto-approve
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
