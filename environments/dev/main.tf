@@ -1,7 +1,6 @@
 # =============================
 # CONFIGURAÇÃO DO TERRAFORM
 # =============================
-
 terraform {
   # Indicamos que vamos usar o provedor da AWS
   required_providers {
