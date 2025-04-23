@@ -98,6 +98,7 @@ module "lambda_telegram" {
     ]
   })
 
+
   environment_variables = {
     TELEGRAM_SECRET_NAME = "fog-alerts-config"
   }
