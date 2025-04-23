@@ -1,0 +1,17 @@
+# Terraform build
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Lambda artifacts
+*.zip
+
+# IDEs e sistemas operacionais
+.vscode/
+.idea/
+.DS_Store
+
+# Cache Python
+__pycache__/
+*.pyc
