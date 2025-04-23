@@ -99,7 +99,7 @@ module "lambda_telegram" {
   })
 
   environment_variables = {
-    TELEGRAM_SECRET_NAME = "fog-alerts-telegram-webhook"
+    TELEGRAM_SECRET_NAME = "fog-alerts-config"
   }
 }
 
@@ -121,6 +121,6 @@ module "lambda_googlechat" {
   })
 
   environment_variables = {
-    GOOGLECHAT_SECRET_NAME = "fog-alerts-googlechat-webhook"
+    GOOGLECHAT_SECRET_NAME = "fog-alerts-config"
   }
 }
