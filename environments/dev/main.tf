@@ -46,3 +46,10 @@ module "sqs_log_queue" {
   environment   = "dev"
   owner         = "CafezinCloud"
 }
+
+module "dashboard" {
+  source             = "../../infrastructure/modules/dashboard"
+  sns_topic_name     = "fog-alerts-topic"
+  sqs_queue_name     = "fog-alerts-log-queue"
+  lambda_logger_name = "fog-alerts-logger"
+}
