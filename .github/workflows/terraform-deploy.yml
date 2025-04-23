@@ -1,57 +1,53 @@
-name: ⚙️ Terraform Deploy
+name: 🚀 Terraform Deploy
 
 on:
-  workflow_dispatch: # Execução manual
+  push:
+    branches: [main]
+    paths:
+      - 'environments/**'
+      - 'infrastructure/**'
+      - '.github/workflows/terraform-deploy.yml'
+
+permissions:
+  id-token: write     # ✅ Necessário para OIDC
+  contents: read      # 📄 Para acesso ao repositório
 
 jobs:
-  terraform:
-    name: 🚀 Deploy Terraform na AWS
+  deploy:
+    name: 📦 Terraform Pipeline
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📦 Checkout do repositório
+      - name: 🧾 Checkout código
         uses: actions/checkout@v3
 
-      - name: ⬇️ Instalar Terraform
+      - name: 🔐 Configurar credenciais AWS via OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::545009834951:role/Terraform-Fog-Infra
+          aws-region: us-east-1
+
+      - name: 🧰 Instalar Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.7
+          terraform_version: 1.6.6
 
-      - name: 🔁 Terraform Init
+      - name: 🧪 Terraform Init
         run: |
-          echo "========================="
-          echo "🚀 Iniciando Terraform Init"
-          echo "========================="
-          terraform init
-        working-directory: environments/dev
-        env:
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          echo "====================="
+          echo "🟢 Iniciando Terraform"
+          echo "====================="
+          terraform -chdir=environments/dev init
 
       - name: 🔍 Terraform Validate
-        run: terraform validate
-        working-directory: environments/dev
-        env:
-          AWS_REGION: us-east-1
+        run: terraform -chdir=environments/dev validate
 
-      - name: 🧹 Terraform Format Check
-        run: terraform fmt -check
-        working-directory: environments/dev
+      - name: 🔎 Terraform Format Check
+        run: terraform -chdir=environments/dev fmt -check
 
       - name: 📋 Terraform Plan
-        run: terraform plan
-        working-directory: environments/dev
-        env:
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform -chdir=environments/dev plan
 
-      - name: ⚠️ Terraform Apply (Manual)
+      - name: 🚀 Terraform Apply (manual)
         if: github.event_name == 'workflow_dispatch'
-        run: terraform apply -auto-approve
-        working-directory: environments/dev
-        env:
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform -chdir=environments/dev apply -auto-approve
